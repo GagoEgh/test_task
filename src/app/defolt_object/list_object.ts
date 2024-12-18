@@ -11,3 +11,4 @@ export  const list:ListInterface[] = [
     { id:8, name: 'Ивент', expanded: false, items: ['Ивент 8.1', 'Ивент 8.2'], bgColor:'transparent', color: '#babcbd', choice:false },
     { id:9, name: 'Входящие обращения', expanded: false, items: ['Входящие обращения 9.1', 'Входящие обращения 9.2'], bgColor:'transparent', color: '#babcbd', choice:false },
 ];
+

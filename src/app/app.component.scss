@@ -29,13 +29,22 @@
                 text-align: center;
             }
 
+ 
             .list-content{
                 color: #2E3640;
                 display: flex;
                 gap: 5px;
-                // &:hover{
-                //     background-color: #f3f4f6;
-                // }
+
+                .deselect{
+                    position: relative;
+    
+                    &::after{
+                        content: '-';
+                        position: absolute;
+                        top:5px;
+                        left: 4px;
+                    }
+                }
 
                 .container_list-item-name{
                     color: #babcbd;
@@ -63,5 +72,3 @@
     }
 
 }
-
-
