@@ -1,30 +1,66 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { IndexDBService } from './services/indexDB.service';
+import { CommonModule } from '@angular/common';
+import { ListInterface } from './interfaces/list.interface';
+import { UpdateDateService } from './services/updateDate.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet,CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent{
-  db = inject(IndexDBService);
-  cdr = inject(ChangeDetectorRef)
+  private db = inject(IndexDBService);
+  private updateDateService  = inject(UpdateDateService);
+  public list = this.db.list;
+  public isOpen = signal(false);
+  public choiceAll = signal(false);
+  public isChecked = signal(false)
 
-  categories = [
-    { id: 1, name: 'Категория 1', expanded: false, items: ['Элемент 1.1', 'Элемент 1.2'] },
-    { id: 2, name: 'Категория 2', expanded: false, items: ['Элемент 2.1', 'Элемент 2.2'] },
-    { id: 3, name: 'Категория 3', expanded: false, items: ['Элемент 3.1', 'Элемент 3.2'] },
-  ];
+  public toggleCategory(id: number): void {
+    const item = this.list().find(cat=>cat.id ===id);
+    if (item) {
+      item.expanded = !item.expanded;
+    }
 
-  list = this.db.list;
+  }
 
-  toggleCategory(id: number): void {
-    const category = this.categories.find(cat => cat.id === id);
-    if (category) {
-      category.expanded = !category.expanded;
+  public openList():void{
+    this.isOpen.update((value)=>value=true)
+  }
+
+  public  addedMinMaxClass(item:any){
+    return {
+      'container_list-minHeight':!item.expanded,
+      'container_list-maxHeight':item.expanded
     }
   }
+
+  public  expandCollapse(item:any){
+    return {
+      'container_list-itemData':item.expanded,
+      'itemData': !item.expanded
+    }
+  }
+
+  public changeAll(){
+    this.choiceAll.set(true)
+    this.list().forEach(item=>item.choice=true);
+    this.updateDateService.updateAll(this.list())
+  }
+
+  public  change(event:Event,item:ListInterface){
+    const isChecked = (event.target as HTMLInputElement).checked;
+   
+    if(isChecked){
+      this.isChecked.set(true)
+    }
+    item.choice= !item.choice;
+
+    this.updateDateService.updateDate(item);
+  }
+ 
 }

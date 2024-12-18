@@ -1,29 +1,67 @@
-.category-header {
-    cursor: pointer;
-    font-weight: bold;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-  }
-  
-  .category-content {
-    padding-left: 20px;
-    border-left: 2px solid #ccc;
-    margin-bottom: 10px;
-  }
+.container{
+    width: 35%;
+    margin: 35px auto;
+    .container_list{
+        list-style: none;
+        // color: #D3D5D6;
+        // color: #000000;
+    
+        .container_list-maxHeight{
+            height: 80px;
+            transition: all ease-in-out 0.5s;
+        }
 
+        .container_list-minHeight{
+            height: 40px;
+            transition: all ease-in-out 0.5s;
+        }
 
-  .container_list{
-    list-style: none;
-    // color: #D3D5D6;
-    // color: #000000;
-
-    .container_list-item{
-        .btn{
-            color: #2E3640;
+        .container_list-item{
             border: 1px solid #D4D5D8;
-            display: flex;
-            align-items: center;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: all ease-in-out 0.5s;
+
+            .btn{
+                display: block;
+                margin: 0 auto;
+                padding: 7px;
+                text-align: center;
+            }
+
+            .list-content{
+                color: #2E3640;
+                display: flex;
+                gap: 5px;
+                // &:hover{
+                //     background-color: #f3f4f6;
+                // }
+
+                .container_list-item-name{
+                    color: #babcbd;
+                    width: 92%;
+                    padding: 7px;
+                    z-index: 999;
+                    height: 28px;
+                }
+            }
+
+            .container_list-itemData{
+                color: #D3D5D6;
+                padding: 7px;
+                transform: translate(0, 0);
+                z-index: 999;
+                transition: all ease-in-out 0.5s;
+            }
+
+            .itemData{
+                transform: translate(0, -10px);
+                opacity: 0;
+                transition: all ease-in-out 0.3s;
+            }
         }
     }
-  }
+
+}
+
+

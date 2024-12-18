@@ -7,7 +7,7 @@ import { list } from "../defolt_object/list_object";
 export class IndexDBService {
     private listData = list;
     private openRequest = indexedDB.open('state',1);
-    private dateBase!:IDBDatabase;
+    private datebase!:IDBDatabase;
 
     public list:WritableSignal<any[]> = signal([]);
     
@@ -19,20 +19,36 @@ export class IndexDBService {
         this.openRequest.onupgradeneeded = (event: Event) => this.upgrade(event);
         this.openRequest.onsuccess = async (event: Event) => await this.onSuccess(event);
         this.openRequest.onerror = () => console.error('Database initialization error');
-        console.log('eeee',this.list())
     }
 
     private async onSuccess(event: Event): Promise<any> {
         const target = event.target as IDBOpenDBRequest;
-        this.dateBase = target.result;
+        this.datebase = target.result;
         const result = await this.fetchAll();
         this.list.set(result);
        
     }
 
+    public updateDate(name:string){
+        return new Promise((resolve, reject)=>{
+            const transaction = this.datebase.transaction('list', 'readonly');
+            const objectStore = transaction.objectStore('list');
+            const request =  objectStore.get(name);
+            request.onsuccess = (event: Event) => {
+                const target = event.target as IDBRequest;
+                resolve(target.result);
+            };
+
+            request.onerror = (event: Event) => {
+                const target = event.target as IDBRequest;
+                reject(target.error);
+            };
+        })
+    }
+
     private fetchAll(): Promise<any[]> {
         return new Promise((resolve, reject) => {
-          const transaction = this.dateBase.transaction('list', 'readonly');
+          const transaction = this.datebase.transaction('list', 'readonly');
           const objectStore = transaction.objectStore('list');
           const request = objectStore.getAll();
       
@@ -50,10 +66,10 @@ export class IndexDBService {
 
     private upgrade(event: Event): void {
         const target = event.target as IDBOpenDBRequest;
-        this.dateBase = target.result;
+        this.datebase = target.result;
     
-        if (!this.dateBase.objectStoreNames.contains('list')) {
-          const objectStore = this.dateBase.createObjectStore('list', { keyPath: 'name' });
+        if (!this.datebase.objectStoreNames.contains('list')) {
+          const objectStore = this.datebase.createObjectStore('list', { keyPath: 'name' });
           this.listData.forEach((data) => {
                 objectStore.add(data);
             });

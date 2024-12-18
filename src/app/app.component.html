@@ -1,34 +1,32 @@
 <div class="container">
   <ul class="container_list">
     <li class="container_list-item">
-      <div class="btn">
-        <input type="checkbox"><span>список</span> 
+      @if(!isOpen()){
+        <span class="btn" (click)="openList()">список</span> 
+      }@else{
+      <div class="list-content">
+        <input type="checkbox"(change)='changeAll()'>
+        <span class="container_list-item-title btn">Выбрать всё</span> 
       </div>
-    
+      }
     </li>
-  </ul>
-
-  <ul>
-    @for( item of list(); track item.name){
-      <li>{{item.name}}</li>
+    @if(isOpen()){
+      @for( item of list(); track item.name){
+        <li class="container_list-item" [ngClass]="addedMinMaxClass(item)" >
+          <div class="list-content" [style.backgroundColor]="item.bgColor">
+            <input type="checkbox" [checked]="item.choice" (change)='change($event,item)'>
+            <div class="container_list-item-name" (click)="toggleCategory(item.id)">
+              <span [style.color]="item.color">{{item.name}}</span>
+            </div>
+          </div>
+          <div [ngClass]="expandCollapse(item)">
+            @for(data of item.items; track data){
+                {{data}}
+            }
+        </div>
+        </li>
+      }
     }
+
   </ul>
 </div>
-
-
-<!-- @for(category of categories; track category.name){
-  
-  <div (click)="toggleCategory(category.id)" class="category-header">
-      {{ category.name }}
-      <span>{{ category.expanded ? '▲' : '▼' }}</span>
-  </div>
-  @if(category.expanded){
-      <div class="category-content">
-          @for(item of category.items; track item){
-              {{item}}
-          }
-      </div>
-
-  }
-  
-} -->
