@@ -20,9 +20,9 @@ export class AppComponent{
   public list = this.db.list;
   public isOpen = signal(false);
   public isChecked = this.db.isChecked;
-  public isExpanded: boolean = false;
-  public selectionCount=0;
-  public  isClickOutsied = false;
+  public isExpanded = signal(false);
+  public selectionCount=signal(0);
+  public  isClickOutside = signal(false);
 
 
   public toggleCategory(id: number): void {
@@ -36,39 +36,36 @@ export class AppComponent{
     this.isOpen.set(true)
   }
 
-  public changeAll(){
+  public selectAllItems():void{
     this.list().forEach(item=>item.choice=true);
     this.updateDateService.updateAll(this.list());
     this.isChecked.set(true)
   }
 
-  public change(event:Event,item:ListInterface){
+  public toggleItemSelection(event:Event,item:ListInterface){
     const isChecked = (event.target as HTMLInputElement).checked;
-    if(isChecked){
-      this.isChecked.set(true)
-    }
-    item.choice= !item.choice;
+    item.choice = isChecked;
     this.updateDateService.updateDate(item);
+    this.isChecked.set(this.list().some(item => item.choice));
   }
 
-  public deselected(){
+  public deselectAllItems(){
     this.list().forEach(item=>item.choice=false);
     this.updateDateService.updateAll(this.list());
     this.isChecked.set(false)
   }
  
   public clickOutside(): void {
-    if (this.isExpanded) {
-      this.isExpanded = false;
+    if (this.isExpanded()) {
+      this.isExpanded.set(false);
       this.isOpen.set(false);
-      const select = this.list().filter(item=>item.choice===true);
-      this.selectionCount = select.length;
-      this.isClickOutsied= true;
+      this.selectionCount.set(this.list().filter(item => item.choice).length);
+      this.isClickOutside.set(true);
     }
   }
 
   public toggleList(): void {
-    this.isExpanded = !this.isExpanded;
+    this.isExpanded.update(expanded => !expanded);
   }
 
   public  addedMinMaxClass(item:any){

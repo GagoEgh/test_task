@@ -3,37 +3,32 @@
     @if(!isOpen()){
       <div class="container_list" (click)="toggleList()">
         <div class="container_list-item">
-          @if(isClickOutsied){
-            <span class="btn" (click)="openList()">{{selectionCount }} воронки, 24 этапа</span>
-          }@else{
-            <span class="btn" (click)="openList()">список</span>
-          }
+          <span class="btn" (click)="openList()">
+            {{ isClickOutside() ? selectionCount() + ' воронки, 24 этапа' : 'список' }}
+          </span>
         </div>
       </div>
     }
-    @if(isExpanded){
+    @if(isExpanded()){
     <ul class="container_list" (clickOutside)="clickOutside()">
-      <li class="container_list-item">
+      <li class="container_list-item" [style.display]="'flex'">
         @if(isOpen()||isChecked()){
-          @if(isChecked()){
-            <div class="list-content">
-              <input type="checkbox" class="deselect" (change)='deselected()'>
-              <span class="container_list-item-title btn ">Снять выделение</span> 
-            </div>
-          }@else{
-            <div class="list-content">
-              <input type="checkbox"(change)='changeAll()'>
-              <span class="container_list-item-title btn">Выбрать всё</span> 
-            </div>
+          <input
+            type="checkbox"
+            [checked]="isChecked()"
+            (change)="isChecked() ? deselectAllItems() : selectAllItems()"
+          />
+          <span class="container_list-item-title btn">
+            {{ isChecked() ? 'Снять выделение' : 'Выбрать всё' }}
+          </span>
+      
           }
-    
-        }
       </li>
       @if(isOpen()){
         @for( item of list(); track item.name){
           <li class="container_list-item" [ngClass]="addedMinMaxClass(item)" >
             <div class="list-content" [style.backgroundColor]="item.bgColor">
-              <input type="checkbox" [checked]="item.choice" (change)='change($event,item)'>
+              <input type="checkbox" [checked]="item.choice" (change)='toggleItemSelection($event,item)'>
               <div class="container_list-item-name" (click)="toggleCategory(item.id)">
                 <span [style.color]="item.color">{{item.name}}</span>
               </div>
